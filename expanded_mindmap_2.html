@@ -1,0 +1,170 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 800px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "lightblue", "font": {"color": "black"}, "font_size": 16, "id": "Friedrich II", "label": "Friedrich II", "shape": "dot", "size": 25}, {"color": "lightgreen", "font": {"color": "black"}, "font_size": 21, "id": "Events", "label": "Events", "shape": "dot", "size": 20}, {"color": "lightgreen", "font": {"color": "black"}, "font_size": 21, "id": "Ideas", "label": "Ideas", "shape": "dot", "size": 20}, {"color": "lightgreen", "font": {"color": "black"}, "font_size": 21, "id": "Buildings", "label": "Buildings", "shape": "dot", "size": 20}, {"color": "lightgreen", "font": {"color": "black"}, "font_size": 21, "id": "Historical Figures", "label": "Historical Figures", "shape": "dot", "size": 20}, {"color": "lightgreen", "font": {"color": "black"}, "font_size": 21, "id": "Works", "label": "Works", "shape": "dot", "size": 20}, {"color": "lightgreen", "font": {"color": "black"}, "font_size": 21, "id": "Family", "label": "Family", "shape": "dot", "size": 20}, {"color": "lightgreen", "font": {"color": "black"}, "font_size": 21, "id": "Territories", "label": "Territories", "shape": "dot", "size": 20}, {"color": "orange", "font": {"color": "black"}, "font_size": 21, "id": "Sixth Crusade", "label": "Sixth Crusade", "shape": "dot", "size": 15}, {"color": "orange", "font": {"color": "black"}, "font_size": 21, "id": "Constitutions of Melfi", "label": "Constitutions of Melfi", "shape": "dot", "size": 15}, {"color": "orange", "font": {"color": "black"}, "font_size": 21, "id": "Excommunication by Pope Gregory IX", "label": "Excommunication by Pope Gregory IX", "shape": "dot", "size": 15}, {"color": "orange", "font": {"color": "black"}, "font_size": 21, "id": "Excommunication by Pope Innocent IV", "label": "Excommunication by Pope Innocent IV", "shape": "dot", "size": 15}, {"color": "orange", "font": {"color": "black"}, "font_size": 21, "id": "Establishment of University of Naples", "label": "Establishment of University of Naples", "shape": "dot", "size": 15}, {"color": "pink", "font": {"color": "black"}, "font_size": 21, "id": "Cultural patronage", "label": "Cultural patronage", "shape": "dot", "size": 10}, {"color": "pink", "font": {"color": "black"}, "font_size": 21, "id": "Centralization of power", "label": "Centralization of power", "shape": "dot", "size": 10}, {"color": "pink", "font": {"color": "black"}, "font_size": 21, "id": "Religious tolerance", "label": "Religious tolerance", "shape": "dot", "size": 10}, {"color": "pink", "font": {"color": "black"}, "font_size": 21, "id": "Diplomacy", "label": "Diplomacy", "shape": "dot", "size": 10}, {"color": "purple", "font": {"color": "black"}, "font_size": 21, "id": "Castel del Monte", "label": "Castel del Monte", "shape": "dot", "size": 10}, {"color": "purple", "font": {"color": "black"}, "font_size": 21, "id": "University of Naples", "label": "University of Naples", "shape": "dot", "size": 10}, {"color": "purple", "font": {"color": "black"}, "font_size": 21, "id": "Palermo Cathedral", "label": "Palermo Cathedral", "shape": "dot", "size": 10}, {"color": "red", "font": {"color": "black"}, "font_size": 21, "id": "Pope Innocent III", "label": "Pope Innocent III", "shape": "dot", "size": 10}, {"color": "red", "font": {"color": "black"}, "font_size": 21, "id": "Pope Gregory IX", "label": "Pope Gregory IX", "shape": "dot", "size": 10}, {"color": "red", "font": {"color": "black"}, "font_size": 21, "id": "Thomas Aquinas", "label": "Thomas Aquinas", "shape": "dot", "size": 10}, {"color": "red", "font": {"color": "black"}, "font_size": 21, "id": "Isabella of England", "label": "Isabella of England", "shape": "dot", "size": 10}, {"color": "red", "font": {"color": "black"}, "font_size": 21, "id": "Manfred, King of Sicily", "label": "Manfred, King of Sicily", "shape": "dot", "size": 10}, {"color": "yellow", "font": {"color": "black"}, "font_size": 21, "id": "Liber Augustalis (Constitutions of Melfi)", "label": "Liber Augustalis (Constitutions of Melfi)", "shape": "dot", "size": 10}, {"color": "yellow", "font": {"color": "black"}, "font_size": 21, "id": "De Arte Venandi cum Avibus", "label": "De Arte Venandi cum Avibus", "shape": "dot", "size": 10}, {"color": "cyan", "font": {"color": "black"}, "font_size": 21, "id": "Henry VI (Father)", "label": "Henry VI (Father)", "shape": "dot", "size": 10}, {"color": "cyan", "font": {"color": "black"}, "font_size": 21, "id": "Constance of Sicily (Mother)", "label": "Constance of Sicily (Mother)", "shape": "dot", "size": 10}, {"color": "cyan", "font": {"color": "black"}, "font_size": 21, "id": "Henry VII (Son)", "label": "Henry VII (Son)", "shape": "dot", "size": 10}, {"color": "cyan", "font": {"color": "black"}, "font_size": 21, "id": "Conrad IV (Son)", "label": "Conrad IV (Son)", "shape": "dot", "size": 10}, {"color": "brown", "font": {"color": "black"}, "font_size": 21, "id": "Holy Roman Empire", "label": "Holy Roman Empire", "shape": "dot", "size": 10}, {"color": "brown", "font": {"color": "black"}, "font_size": 21, "id": "Kingdom of Sicily", "label": "Kingdom of Sicily", "shape": "dot", "size": 10}, {"color": "purple", "font": {"color": "black"}, "font_size": 21, "id": "Architecture", "label": "Architecture", "shape": "dot", "size": 10}, {"color": "purple", "font": {"color": "black"}, "font_size": 21, "id": "Symbolism", "label": "Symbolism", "shape": "dot", "size": 10}, {"color": "pink", "font": {"color": "black"}, "font_size": 21, "id": "Fredericks Court", "label": "Fredericks Court", "shape": "dot", "size": 10}, {"color": "pink", "font": {"color": "black"}, "font_size": 21, "id": "Relations with the Papacy", "label": "Relations with the Papacy", "shape": "dot", "size": 10}, {"color": "yellow", "font": {"color": "black"}, "font_size": 21, "id": "Hunting techniques", "label": "Hunting techniques", "shape": "dot", "size": 10}, {"color": "yellow", "font": {"color": "black"}, "font_size": 21, "id": "Falconry", "label": "Falconry", "shape": "dot", "size": 10}, {"color": "yellow", "font": {"color": "black"}, "font_size": 21, "id": "Bird anatomy", "label": "Bird anatomy", "shape": "dot", "size": 10}, {"color": "red", "font": {"color": "black"}, "font_size": 21, "id": "Summa Theologica", "label": "Summa Theologica", "shape": "dot", "size": 10}, {"color": "red", "font": {"color": "black"}, "font_size": 21, "id": "Influence on Scholasticism", "label": "Influence on Scholasticism", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "black"}, "font_size": 21, "id": "Power Struggle with Papacy", "label": "Power Struggle with Papacy", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "black"}, "font_size": 21, "id": "Second Council of Lyons", "label": "Second Council of Lyons", "shape": "dot", "size": 10}]);
+                  edges = new vis.DataSet([{"from": "Friedrich II", "length": 300, "to": "Events"}, {"from": "Friedrich II", "length": 300, "to": "Ideas"}, {"from": "Friedrich II", "length": 300, "to": "Buildings"}, {"from": "Friedrich II", "length": 300, "to": "Historical Figures"}, {"from": "Friedrich II", "length": 300, "to": "Works"}, {"from": "Friedrich II", "length": 300, "to": "Family"}, {"from": "Friedrich II", "length": 300, "to": "Territories"}, {"from": "Events", "length": 150, "to": "Sixth Crusade"}, {"from": "Events", "length": 150, "to": "Constitutions of Melfi"}, {"from": "Events", "length": 150, "to": "Excommunication by Pope Gregory IX"}, {"from": "Events", "length": 150, "to": "Excommunication by Pope Innocent IV"}, {"from": "Events", "length": 150, "to": "Establishment of University of Naples"}, {"from": "Ideas", "to": "Cultural patronage"}, {"from": "Ideas", "to": "Centralization of power"}, {"from": "Ideas", "to": "Religious tolerance"}, {"from": "Ideas", "to": "Diplomacy"}, {"from": "Buildings", "to": "Castel del Monte"}, {"from": "Buildings", "to": "University of Naples"}, {"from": "Buildings", "to": "Palermo Cathedral"}, {"from": "Historical Figures", "to": "Pope Innocent III"}, {"from": "Historical Figures", "to": "Pope Gregory IX"}, {"from": "Historical Figures", "to": "Thomas Aquinas"}, {"from": "Historical Figures", "to": "Isabella of England"}, {"from": "Historical Figures", "to": "Manfred, King of Sicily"}, {"from": "Works", "to": "Liber Augustalis (Constitutions of Melfi)"}, {"from": "Works", "to": "De Arte Venandi cum Avibus"}, {"from": "Family", "to": "Henry VI (Father)"}, {"from": "Family", "to": "Constance of Sicily (Mother)"}, {"from": "Family", "to": "Henry VII (Son)"}, {"from": "Family", "to": "Conrad IV (Son)"}, {"from": "Territories", "to": "Holy Roman Empire"}, {"from": "Territories", "to": "Kingdom of Sicily"}, {"from": "Castel del Monte", "length": 150, "to": "Architecture"}, {"from": "Castel del Monte", "length": 150, "to": "Symbolism"}, {"from": "Diplomacy", "length": 150, "to": "Fredericks Court"}, {"from": "Diplomacy", "length": 150, "to": "Relations with the Papacy"}, {"from": "De Arte Venandi cum Avibus", "length": 150, "to": "Hunting techniques"}, {"from": "De Arte Venandi cum Avibus", "length": 150, "to": "Falconry"}, {"from": "De Arte Venandi cum Avibus", "length": 150, "to": "Bird anatomy"}, {"from": "Thomas Aquinas", "length": 150, "to": "Summa Theologica"}, {"from": "Thomas Aquinas", "length": 150, "to": "Influence on Scholasticism"}, {"from": "Excommunication by Pope Gregory IX", "length": 150, "to": "Power Struggle with Papacy"}, {"from": "Excommunication by Pope Innocent IV", "length": 150, "to": "Second Council of Lyons"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
